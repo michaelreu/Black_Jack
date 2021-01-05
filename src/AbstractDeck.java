@@ -16,6 +16,7 @@ abstract class AbstractDeck {
         return this.cards;
     }
 
+<<<<<<< HEAD
     void shuffle(){
         Collections.shuffle(cards);
     }
@@ -23,4 +24,9 @@ abstract class AbstractDeck {
     Card pop(){
         return cards.pop();
     }
+=======
+	public boolean isEmpty() {
+		return false;
+	}
+>>>>>>> bla bla
 }

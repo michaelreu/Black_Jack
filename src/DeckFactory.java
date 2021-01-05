@@ -1,11 +1,11 @@
 
 public abstract class DeckFactory {
-    public Deck getDeck(){
-        Deck myDeck = this.CreateDeck();
+    public AbstractDeck getDeck(){
+        AbstractDeck myDeck = this.CreateDeck();
         return myDeck;
     }
 
-    public abstract Deck CreateDeck();
+    public abstract AbstractDeck CreateDeck();
 
 }
 

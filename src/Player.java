@@ -4,9 +4,17 @@ import java.util.ArrayList;
 public class Player {
     private String name;
     private int amount;
-    private Boolean status;
+    private Boolean stay;
     private ArrayList<Card> hand;
     private int betSize;
+
+    public Player(String name, int amount){
+        this.name = name;
+        this.amount = amount;
+        this.stay = false;
+        this.hand = new ArrayList<Card>();
+
+    }
 
     public void addCard(Card card){
         this.hand.add(card);
@@ -25,12 +33,12 @@ public class Player {
         return name;
     }
 
-    public Boolean getStatus() {
-        return status;
+    public Boolean getstay() {
+        return stay;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
+    public void setstay(Boolean stay) {
+        this.stay = stay;
     }
 
     public ArrayList<Card> getHand() {
@@ -52,4 +60,8 @@ public class Player {
     public void lost_round() {
         this.amount -= this.betSize;
     }
+
+	public int rank() {
+		return 0;
+	}
 }

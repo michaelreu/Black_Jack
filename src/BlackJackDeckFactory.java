@@ -1,9 +1,12 @@
-public class BlackJackDeckFactory extends DeckFactory{
+import java.util.ArrayList;
+
+public class BlackJackDeckFactory extends DeckFactory {
 
     @Override
-    public Deck CreateDeck() {
-        Deck blackJackDeck = new BlackJackDeck(5);
+    public AbstractDeck CreateDeck() {
+        BlackJackDeck blackJackDeck = new BlackJackDeck(5);
         return blackJackDeck;
     }
 }
+
     
