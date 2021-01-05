@@ -19,7 +19,7 @@ abstract class Observable {
     public void notifyObservers(){
         Iterator<Iobserver> listener = listeners.iterator();
         while (listener.hasNext()){
-            listener.next().update();
+            listener.next().update(this);
         }
     }
 }

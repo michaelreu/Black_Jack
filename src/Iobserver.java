@@ -1,3 +1,3 @@
 public interface Iobserver {
-    public void update();
+    public void update(Observable obj);
 }
