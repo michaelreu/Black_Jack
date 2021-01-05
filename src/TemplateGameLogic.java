@@ -1,8 +1,11 @@
-import java.util.List;
 import java.util.ArrayList;
 
 abstract class TemplateGameLogic extends Observable {
-    Dealer dealer;
-    List<Player> players;
-    
+    protected State state;
+    protected ArrayList<Player> players;
+
+    public abstract State initGame();
+    public abstract State playNextTurn();
+    public abstract State whoWin();
+
 }

@@ -3,11 +3,12 @@ import java.util.Collections;
 
 public class BlackJackDealer implements Dealer {
 
-    private ArrayList<Card> deck;
-    private int index;
+    private AbstractDeck deck; 
+    private ArrayList<Card> dealerCards;
 
-    public BlackJackDealer(ArrayList<Card> deck){
+    public BlackJackDealer(AbstractDeck deck){
         this.deck = deck;
+        this.dealerCards = new ArrayList<Card>();
     }
     
     @Override
@@ -17,8 +18,7 @@ public class BlackJackDealer implements Dealer {
             throw new RuntimeException("No more cards in the deck");
         }
         else{
-            nextCard = this.deck.get(this.index);
-            this.index++;
+            nextCard = this.deck.pop();
             return nextCard;
         }
 
@@ -26,8 +26,27 @@ public class BlackJackDealer implements Dealer {
 
     @Override
     public void shuffle() {
-        Collections.shuffle(this.deck);
-        this.index = 0;
+        deck.shuffle(this.deck);
     }
     
+    int rank(){
+        
+    }
+
+    boolean hasBlackJack(){
+
+    }
+
+    public void addCard(Card card){
+        this.dealerCards.add(card);
+    }
+
+    public ArrayList<Card> getHand() {
+        return dealerCards;
+    }
+
+    public void emptyHand() {
+        this.dealerCards.removeAll(this.hdealerCardsand);
+    }
+
 }
