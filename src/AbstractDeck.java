@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-abstract class Deck {
+abstract class AbstractDeck {
     
     protected List<Card> cards;
     protected Integer size;
 
-    public Deck(Integer size){
+    public AbstractDeck(Integer size){
         this.size = size;
         cards = new ArrayList<>();
     }

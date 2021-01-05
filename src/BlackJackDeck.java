@@ -1,4 +1,4 @@
-public class BlackJackDeck extends Deck{
+public class BlackJackDeck extends AbstractDeck{
 
     public BlackJackDeck(Integer size){
         super(size);
@@ -12,7 +12,6 @@ public class BlackJackDeck extends Deck{
             size--;
         }
     }
-
 }
 
 
