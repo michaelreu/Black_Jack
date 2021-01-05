@@ -1,18 +1,26 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Stack; 
 
 
 abstract class AbstractDeck {
     
-    protected List<Card> cards;
+    protected Stack<Card> cards;
     protected Integer size;
 
     public AbstractDeck(Integer size){
         this.size = size;
-        cards = new ArrayList<>();
+        cards = new Stack<>();
     }
 
-    List<Card> getCards(){
+    Stack<Card> getCards(){
         return this.cards;
+    }
+
+    void shuffle(){
+        Collections.shuffle(cards);
+    }
+
+    Card pop(){
+        return cards.pop();
     }
 }
