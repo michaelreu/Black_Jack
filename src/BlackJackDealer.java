@@ -26,7 +26,7 @@ public class BlackJackDealer implements Dealer {
 
     @Override
     public void shuffle() {
-        this.deck = Collection.shuffle(this.deck);
+        Collections.shuffle(this.deck);
         this.index = 0;
     }
     
