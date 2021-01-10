@@ -34,7 +34,7 @@ public class BlackJackDealer implements Dealer {
     }
 
     boolean hasBlackJack(){
-        //TODO
+        //TODO asdasd
     }
 
     public void addCard(Card card){
