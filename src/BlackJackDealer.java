@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class BlackJackDealer implements Dealer {
 
@@ -29,12 +30,31 @@ public class BlackJackDealer implements Dealer {
         this.deck.shuffle();
     }
     
-    int rank(){
-        //TODO
+    int rank(ArrayList<Card> cards){
+        int sumCards = 0; 
+        //TODO check that the cards are sorted in DESCENDING order.
+        Comparator<Card> compareByRank = (Card c1, Card c2) -> c1.getRank() - c2.getRank();
+        Collections.sort(cards,compareByRank);
+
+        for (Card card : cards){
+            int rank = card.getRank();
+            if (rank == 11 || rank == 12 || rank == 13){
+                sumCards += 10;
+            }else if(rank == 1){
+                if (sumCards + 11 <= 21){
+                    sumCards += 11;
+                }else{
+                    sumCards += 1;
+                }
+            }else{
+                sumCards += rank;
+            }
+        }
+        return sumCards;
     }
 
-    boolean hasBlackJack(){
-        //TODO asdasd
+    boolean hasBlackJack(ArrayList<Card> cards){
+        return rank(cards) == 21;
     }
 
     public void addCard(Card card){

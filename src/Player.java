@@ -1,5 +1,6 @@
 import java.util.ArrayList;
-
+import java.util.Comparator;
+import java.util.Collections;
 
 public class Player {
     private String name;
@@ -61,23 +62,11 @@ public class Player {
         this.amount -= this.betSize;
     }
 
-	public int rank() {
-		return 0;
-	}
-
     public int getAmount() {
         return amount;
     }
 
     public void setAmount(int amount) {
         this.amount = amount;
-    }
-
-    public Boolean getStay() {
-        return stay;
-    }
-
-    public void setStay(Boolean stay) {
-        this.stay = stay;
     }
 }
