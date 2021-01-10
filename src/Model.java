@@ -8,7 +8,7 @@ abstract class Model extends Observable {
     protected ArrayList<Player> players;
     protected ArrayList<Player> winnersRound;
 
-
+    public abstract Dealer getDealer();
     public abstract void initGame();
     public abstract void addPlayers(Map<String, String> data);
     public abstract void addBets(Map<String, String> data);

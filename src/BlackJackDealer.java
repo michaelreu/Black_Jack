@@ -82,5 +82,4 @@ public class BlackJackDealer implements Dealer {
             dealerCards.add(getCard());
         }
     }
-
 }

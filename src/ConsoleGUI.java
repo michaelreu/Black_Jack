@@ -4,7 +4,12 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class ConsoleGUI extends Observable implements Igui {
-	Scanner sc = new Scanner(System.in);
+	Scanner sc;
+
+	public ConsoleGUI() {
+		this.sc = new Scanner(System.in);
+		state = State.INIT;
+	}
 
 	@Override
 	public void getUserCommand(Observable obj) {
@@ -19,7 +24,7 @@ public class ConsoleGUI extends Observable implements Igui {
 				continue;
 			}
 			hand = playerTurn.getHand();
-			System.out.println(playerTurn.getName() + ": your hand:");
+			System.out.println(playerTurn.getName() + ": your hand: ");
 			for (Card card : hand) {
 				System.out.println(face(card.getRank(), card.getSuit()));
 			}
@@ -30,7 +35,7 @@ public class ConsoleGUI extends Observable implements Igui {
 					sc.next(); // this is important!
 				}
 				userCommand = sc.nextInt();
-			} while (userCommand != 0 || userCommand != 1);
+			} while (userCommand != 0 && userCommand != 1);
 
 			if (userCommand == 0){
 				System.out.println("you decided to stay, please wait to the other players bets");
@@ -41,6 +46,7 @@ public class ConsoleGUI extends Observable implements Igui {
 			}
 			data.put(playerTurn.getName(), command);
 		}
+		state = State.PLAYTURN;
 		notifyObservers(data);
 	}
 
@@ -49,13 +55,14 @@ public class ConsoleGUI extends Observable implements Igui {
 		int index = 1;
 		Map<String, String> data = new HashMap<String, String>();
 		System.out.println("\nWelcome to theBlack Jack game!");
-		System.out.print("Enter player " + index + "name");
+		System.out.println("Enter player " + index + " name ");
 		String name = System.console().readLine().trim();
 		while(true){
 			data.put(name, name);
-			System.out.print("Enter player " + index + "name or '0' to start to play");
+			++index;
+			System.out.println("Enter player " + index + " name or '0' to start to play");
 			name = System.console().readLine().trim();
-			if (name == "0"){
+			if (name.equals("0")){
 				break;
 			}
 		}
@@ -69,7 +76,7 @@ public class ConsoleGUI extends Observable implements Igui {
 		int betSize = 0;
 		for (Player player : myModel.getPlayers()) {	
 			do {
-				System.out.print(player.getName() + " your balance is: " + player.getAmount() +"\n please enter your bet");
+				System.out.println(player.getName() + " your balance is: " + player.getAmount() +"\nplease enter your bet: ");
 				while (!sc.hasNextInt()) {
 					System.out.println("That's not a number!");
 					sc.next(); // this is important!
@@ -81,8 +88,9 @@ public class ConsoleGUI extends Observable implements Igui {
 				}
 			} while (betSize <= 0);
 			data.put(player.getName(), String.valueOf(betSize));
-			System.out.print(player.getName() + "your bet is: " + player.getBetSize() +"good luck!");
-		}   
+			System.out.print(player.getName() + ", your bet is: " + betSize + " good luck!");
+		}
+		state = State.BETS;
 		notifyObservers(data);
 	}
 
@@ -90,16 +98,25 @@ public class ConsoleGUI extends Observable implements Igui {
 	@Override
 	public void declareWinners(Observable obj) {
 		Model myModel = (Model) obj;
-		for (Card card : myModel.) {
+		BlackJackDealer dealer = (BlackJackDealer) myModel.getDealer();
+
+		System.out.println("The dealer Cards are: \n");
+		for (Card card : dealer.getHand()) {
 			System.out.println(face(card.getRank(), card.getSuit()));
 		}
 
 		for (Player player : myModel.players) {
+			System.out.println(player.getName() + " Cards are: \n");
+			for (Card card : player.getHand()) {
+				System.out.println(face(card.getRank(), card.getSuit()));
+			}
             if(myModel.getWinnersRound().contains(player)){
-                return false;
-            }
-        }
-		
+				System.out.println(player.getName() + " congratulations!!! you won " + player.getBetSize() * 2);
+			}else{
+				System.out.println(player.getName() + " you lost this round..");
+
+			}
+        }		
 	}
 
 	private String face(int value, int suit) {
