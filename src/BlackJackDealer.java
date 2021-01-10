@@ -26,15 +26,15 @@ public class BlackJackDealer implements Dealer {
 
     @Override
     public void shuffle() {
-        deck.shuffle(this.deck);
+        this.deck.shuffle();
     }
     
     int rank(){
-        
+        //TODO
     }
 
     boolean hasBlackJack(){
-
+        //TODO
     }
 
     public void addCard(Card card){
@@ -46,7 +46,7 @@ public class BlackJackDealer implements Dealer {
     }
 
     public void emptyHand() {
-        this.dealerCards.removeAll(this.hdealerCardsand);
+        this.dealerCards.removeAll(this.dealerCards);
     }
 
 }
