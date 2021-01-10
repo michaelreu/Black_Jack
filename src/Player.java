@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Collections;
 
 public class Player {
     private String name;
@@ -34,11 +32,11 @@ public class Player {
         return name;
     }
 
-    public Boolean getstay() {
+    public Boolean getStay() {
         return stay;
     }
 
-    public void setstay(Boolean stay) {
+    public void setStay(Boolean stay) {
         this.stay = stay;
     }
 

@@ -19,7 +19,7 @@ abstract class Observable {
     public void unregister(Iobserver observer){
         listeners.remove(observer);
     }
-    public void notifyObservers(Map<String, Object> data){
+    public void notifyObservers(Map<String, String> data){
         Iterator<Iobserver> listener = listeners.iterator();
         while (listener.hasNext()){
             listener.next().update(this, data);

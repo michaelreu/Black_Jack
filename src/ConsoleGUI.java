@@ -6,15 +6,13 @@ import java.util.Scanner;
 public class ConsoleGUI extends Observable implements Igui {
 	Scanner sc = new Scanner(System.in);
 
-    @Override
-    public void draw() {}
-
 	@Override
 	public void getUserCommand(Observable obj) {
 		Model myModel = (Model) obj;
 		this.state =  State.PLAYTURN;
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, String> data = new HashMap<String, String>();
 		int userCommand;
+		String command;
 		ArrayList<Card> hand;
 		for (Player playerTurn : myModel.players){
 			if (playerTurn.getStay()){
@@ -36,18 +34,20 @@ public class ConsoleGUI extends Observable implements Igui {
 
 			if (userCommand == 0){
 				System.out.println("you decided to stay, please wait to the other players bets");
+				command = "stay";
 			}else{
 				System.out.println("you choose to get one more card");
+				command = "oneMore";
 			}
-			data.put(playerTurn.getName(), userCommand);
+			data.put(playerTurn.getName(), command);
 		}
 		notifyObservers(data);
 	}
 
 	@Override
-	public void startGame() {
+	public void addPlayers() {
 		int index = 1;
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, String> data = new HashMap<String, String>();
 		System.out.println("\nWelcome to theBlack Jack game!");
 		System.out.print("Enter player " + index + "name");
 		String name = System.console().readLine().trim();
@@ -65,7 +65,7 @@ public class ConsoleGUI extends Observable implements Igui {
 	@Override
 	public void makeBet(Observable obj) {
 		Model myModel = (Model) obj;
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, String> data = new HashMap<String, String>();
 		int betSize = 0;
 		for (Player player : myModel.getPlayers()) {	
 			do {
@@ -75,11 +75,31 @@ public class ConsoleGUI extends Observable implements Igui {
 					sc.next(); // this is important!
 				}
 				betSize = sc.nextInt();
+				if(betSize >  player.getAmount()){
+					System.out.println("your bet is higher than you credit, please bet again!");
+					betSize = 0;
+				}
 			} while (betSize <= 0);
-			data.put(player.getName(), betSize);
+			data.put(player.getName(), String.valueOf(betSize));
 			System.out.print(player.getName() + "your bet is: " + player.getBetSize() +"good luck!");
 		}   
 		notifyObservers(data);
+	}
+
+
+	@Override
+	public void declareWinners(Observable obj) {
+		Model myModel = (Model) obj;
+		for (Card card : myModel.) {
+			System.out.println(face(card.getRank(), card.getSuit()));
+		}
+
+		for (Player player : myModel.players) {
+            if(myModel.getWinnersRound().contains(player)){
+                return false;
+            }
+        }
+		
 	}
 
 	private String face(int value, int suit) {

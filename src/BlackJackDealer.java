@@ -7,8 +7,8 @@ public class BlackJackDealer implements Dealer {
     private AbstractDeck deck; 
     private ArrayList<Card> dealerCards;
 
-    public BlackJackDealer(AbstractDeck deck){
-        this.deck = deck;
+    public BlackJackDealer(BlackJackDeckFactory deckFactory){
+        this.deck = deckFactory.CreateDeck();
         this.dealerCards = new ArrayList<Card>();
     }
     
