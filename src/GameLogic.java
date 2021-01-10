@@ -1,42 +1,45 @@
 import java.util.ArrayList;
+import java.util.Map;
 
-public class GameLogic extends TemplateGameLogic {
+public class GameLogic extends Model {
 
     private BlackJackDealer dealer;
 
-    public GameLogic(BlackJackDeckFactory deckFactory, ArrayList<Player> players){
-        
+    public GameLogic(BlackJackDeckFactory deckFactory, ArrayList<Player> players) {
+
         this.dealer = new BlackJackDealer(deckFactory.CreateDeck());
         this.players = players;
-        this.state = new State(players.get(0).getName(), players);
-
+        this.state = State.BETS;
     }
 
-
-
-    @Override
-    public State playNextTurn() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public State whoWin() {
-        ArrayList<Player> winners = new ArrayList<Player>();
-        if (dealer.hasBlackJack()){
-            return new State("" ,winners) ;
-        }
-        for (Player player : this.players) {
-            if ((player.rank() >= this.dealer.rank()) && (player.rank() <= 21)){
-                winners.add(player);
+    public void prepareGame() {
+        this.state = State.BETS;
+        notifyObservers();
+        dealer.shuffle();
+        for (int i = 0; i < 2; i++) {
+            for (Player player : this.players) {
+                player.addCard(this.dealer.getCard());
             }
-        } 
-        return new State("" ,winners) ;
+            this.dealer.addCard(dealer.getCard());
+        }
+
     }
 
     @Override
-    public State initGame(){
-       this.dealer
+    public void whoWin() {
+        // TODO
+
+    }
+
+    @Override
+    public void initGame() {
+        // TODO
+
+    }
+
+    @Override
+    public void playNextTurn(Map<String, Object> data) {
+        // TODO Auto-generated method stub
 
     }
     

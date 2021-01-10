@@ -1,4 +1,7 @@
 public interface Igui {
-    void draw();
-    String getUserCommand();
+    public void draw();
+    public void getUserCommand(Observable obj);
+    public void startGame();
+    public void makeBet(Observable obj);
+
 }
