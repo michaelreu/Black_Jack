@@ -1,3 +1,4 @@
-public enum State{ 
-    BETS, PLAYTURN, END_GAME; 
-}
+public enum State{
+    INIT, BETS, PLAYTURN, END_GAME;
+} 
+
