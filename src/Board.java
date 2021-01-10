@@ -8,6 +8,9 @@ public class Board implements Iobserver {
     public Board(Igui ui, Model gl) {
         gui = ui;
         gameLogic = gl;
+    }
+
+    public void runGame(){
         gui.addPlayers();
     }
 
@@ -22,7 +25,7 @@ public class Board implements Iobserver {
                 gui.getUserCommand(obj);
                 break;
             case END_GAME:
-
+                gui.declareWinners(obj);
                 break;
             default:
                 break;
@@ -39,7 +42,7 @@ public class Board implements Iobserver {
                 gameLogic.addBets(data);
                 break;
             case PLAYTURN:
-
+                gameLogic.playNextTurn(data);
                 break;
             case END_GAME:
 

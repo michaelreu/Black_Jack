@@ -137,10 +137,15 @@ public class GameLogic extends Model {
             }
         }
         this.state = State.PLAYTURN;
-        notifyObservers();
+        initGame();
     }
 
     public ArrayList<Player> getWinnersRound() {
         return winnersRound;
+    }
+
+    @Override
+    public Dealer getDealer() {
+        return dealer;
     }
 }

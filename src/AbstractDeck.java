@@ -24,6 +24,6 @@ abstract class AbstractDeck {
         return cards.pop();
     }
 	public boolean isEmpty() {
-        return this.isEmpty();
+        return cards.empty();
 	}
 }
