@@ -69,4 +69,18 @@ public class BlackJackDealer implements Dealer {
         this.dealerCards.removeAll(this.dealerCards);
     }
 
+    boolean isPlayerHandWon(ArrayList<Card> playerCards){
+        if (rank(playerCards) > rank(dealerCards)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    void endTurn() {
+        while(rank(dealerCards) < 17){
+            dealerCards.add(getCard());
+        }
+    }
+
 }
