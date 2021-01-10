@@ -6,7 +6,7 @@ public class GameLogic extends Model {
 
     private BlackJackDealer dealer;
     private int init_amount;
-    private ArrayList<Player> winnersRound;
+ 
 
 
     public GameLogic(BlackJackDeckFactory deckFactory) {
@@ -18,7 +18,6 @@ public class GameLogic extends Model {
         init_amount = 500;
     }
 
-    @Override
     public void whoWin() {
         dealer.endTurn();
         for (Player player : players) {
@@ -69,7 +68,7 @@ public class GameLogic extends Model {
             player.setStay(true);
         }else{
             player.addCard(dealer.getCard());
-            if (player.rank() > 21){
+            if (dealer.rank(player.getHand()) > 21){
                 player.setStay(true);
             }
         }
@@ -134,7 +133,7 @@ public class GameLogic extends Model {
                 playerAmount = player.getAmount();
                 player.setBetSize(betSize);
                 player.setAmount(playerAmount - betSize);
-                player.setstay(false);
+                player.setStay(false);
             }
         }
         this.state = State.PLAYTURN;

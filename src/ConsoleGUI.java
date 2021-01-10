@@ -6,9 +6,6 @@ import java.util.Scanner;
 public class ConsoleGUI extends Observable implements Igui {
 	Scanner sc = new Scanner(System.in);
 
-    @Override
-    public void draw() {}
-
 	@Override
 	public void getUserCommand(Observable obj) {
 		Model myModel = (Model) obj;
@@ -87,6 +84,22 @@ public class ConsoleGUI extends Observable implements Igui {
 			System.out.print(player.getName() + "your bet is: " + player.getBetSize() +"good luck!");
 		}   
 		notifyObservers(data);
+	}
+
+
+	@Override
+	public void declareWinners(Observable obj) {
+		Model myModel = (Model) obj;
+		for (Card card : myModel.) {
+			System.out.println(face(card.getRank(), card.getSuit()));
+		}
+
+		for (Player player : myModel.players) {
+            if(myModel.getWinnersRound().contains(player)){
+                return false;
+            }
+        }
+		
 	}
 
 	private String face(int value, int suit) {
