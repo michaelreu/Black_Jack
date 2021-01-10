@@ -6,6 +6,7 @@ import java.util.Map;
 
 abstract class Model extends Observable {
     protected ArrayList<Player> players;
+    protected ArrayList<Player> winnersRound;
 
 
     public abstract void initGame();
@@ -13,6 +14,7 @@ abstract class Model extends Observable {
     public abstract void addBets(Map<String, String> data);
     public abstract void playNextTurn(Map<String, String> data);
     public abstract void whoWin();
+    public abstract ArrayList<Player> getWinnersRound();
 
     public ArrayList<Player> getPlayers() {
         return players;

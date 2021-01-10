@@ -11,7 +11,7 @@ public class GameLogic extends Model {
 
     public GameLogic(BlackJackDeckFactory deckFactory) {
 
-        dealer = new BlackJackDealer(deckFactory.CreateDeck());
+        dealer = new BlackJackDealer(deckFactory);
         players = new ArrayList<Player>();
         winnersRound = new ArrayList<Player>();
         state = State.INIT;
@@ -19,14 +19,24 @@ public class GameLogic extends Model {
     }
 
     @Override
-    public void whoWin(Map<String, String> data) {
+    public void whoWin() {
         dealer.endTurn();
         for (Player player : players) {
-            if(dealer.PlayerHandWon()){
+            if(dealer.isPlayerHandWon(player.getHand())){
                 winnersRound.add(player);
+                player.setAmount(player.getBetSize() * 2);
             }
         }
-        return winnersRound;
+    }
+
+    private void clearLastHand(){
+        for (Player player : players) {
+            player.setBetSize(0);
+            player.emptyHand();
+            player.setStay(false);
+        }
+        dealer.emptyHand();
+        winnersRound.removeAll(winnersRound);
     }
 
 
@@ -69,6 +79,7 @@ public class GameLogic extends Model {
 
     @Override
     public void initGame() {
+        clearLastHand();
         dealer.shuffle();
         for (int i = 0; i < 2; i++) {
             for (Player player : this.players) {
@@ -95,6 +106,7 @@ public class GameLogic extends Model {
         }
         if(checkEndGame()){
             state = State.END_GAME;
+            whoWin();
         }
         notifyObservers();
     }
@@ -129,4 +141,7 @@ public class GameLogic extends Model {
         notifyObservers();
     }
 
+    public ArrayList<Player> getWinnersRound() {
+        return winnersRound;
+    }
 }
