@@ -45,7 +45,7 @@ public class Board implements Iobserver {
                 gameLogic.playNextTurn(data);
                 break;
             case END_GAME:
-
+                gameLogic.clearLastHand();
                 break;
             default:
                 break;

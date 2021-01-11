@@ -23,12 +23,12 @@ public class GameLogic extends Model {
         for (Player player : players) {
             if(dealer.isPlayerHandWon(player.getHand())){
                 winnersRound.add(player);
-                player.setAmount(player.getBetSize() * 2);
+                player.setAmount(player.getAmount() +  (player.getBetSize() * 2));
             }
         }
     }
 
-    private void clearLastHand(){
+    public void clearLastHand(){
         for (Player player : players) {
             player.setBetSize(0);
             player.emptyHand();
@@ -36,6 +36,8 @@ public class GameLogic extends Model {
         }
         dealer.emptyHand();
         winnersRound.removeAll(winnersRound);
+        this.state = State.BETS;
+        notifyObservers();
     }
 
 
@@ -77,8 +79,7 @@ public class GameLogic extends Model {
     
 
     @Override
-    public void initGame() {
-        clearLastHand();
+    public void dealFirstCards() {
         dealer.shuffle();
         for (int i = 0; i < 2; i++) {
             for (Player player : this.players) {
@@ -131,13 +132,19 @@ public class GameLogic extends Model {
             player = getPlayerByName(playerName);
             if (player != null){
                 playerAmount = player.getAmount();
+                if (betSize == 0){
+                    players.remove(player);
+                    if(players.isEmpty()){
+                        return;
+                    }
+                    continue;
+                }
                 player.setBetSize(betSize);
                 player.setAmount(playerAmount - betSize);
                 player.setStay(false);
             }
         }
-        this.state = State.PLAYTURN;
-        initGame();
+        dealFirstCards();
     }
 
     public ArrayList<Player> getWinnersRound() {

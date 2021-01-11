@@ -70,7 +70,11 @@ public class BlackJackDealer implements Dealer {
     }
 
     boolean isPlayerHandWon(ArrayList<Card> playerCards){
-        if (rank(playerCards) > rank(dealerCards)){
+        int playerRank = rank(playerCards);
+        int dealerRank = rank(dealerCards);
+        if (playerRank > 21){
+            return false;
+        }else if((dealerRank > 21) || (playerRank > dealerRank)){
             return true;
         }else{
             return false;

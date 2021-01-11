@@ -20,13 +20,13 @@ public class ConsoleGUI extends Observable implements Igui {
 		String command;
 		ArrayList<Card> hand;
 		for (Player playerTurn : myModel.players){
-			if (playerTurn.getStay()){
-				continue;
-			}
 			hand = playerTurn.getHand();
 			System.out.println(playerTurn.getName() + ": your hand: ");
 			for (Card card : hand) {
 				System.out.println(face(card.getRank(), card.getSuit()));
+			}
+			if (playerTurn.getStay()){
+				continue;
 			}
 			do {
 				System.out.println("press '1' to take one more card or '0' to stay");
@@ -45,9 +45,10 @@ public class ConsoleGUI extends Observable implements Igui {
 				command = "oneMore";
 			}
 			data.put(playerTurn.getName(), command);
+			state = State.PLAYTURN;
+			notifyObservers(data);
+
 		}
-		state = State.PLAYTURN;
-		notifyObservers(data);
 	}
 
 	@Override
@@ -76,19 +77,26 @@ public class ConsoleGUI extends Observable implements Igui {
 		int betSize = 0;
 		for (Player player : myModel.getPlayers()) {	
 			do {
-				System.out.println(player.getName() + " your balance is: " + player.getAmount() +"\nplease enter your bet: ");
+				if (player.getAmount() == 0){
+					System.out.println(player.getName() + ", Your Balance is Zero, please come back with money\n");
+					betSize = 0;
+					break;
+				}
+				System.out.println(player.getName() + ", your balance is: " + player.getAmount() +"\nplease enter your bet: ");
 				while (!sc.hasNextInt()) {
 					System.out.println("That's not a number!");
-					sc.next(); // this is important!
+					sc.next();
 				}
 				betSize = sc.nextInt();
 				if(betSize >  player.getAmount()){
-					System.out.println("your bet is higher than you credit, please bet again!");
+					System.out.println(player.getName() + ",your bet is higher than your credit, please bet again!\n");
 					betSize = 0;
 				}
 			} while (betSize <= 0);
+			if(betSize > 0){
+				System.out.println(player.getName() + ", your bet is: " + betSize + " good luck!\n");
+			}
 			data.put(player.getName(), String.valueOf(betSize));
-			System.out.print(player.getName() + ", your bet is: " + betSize + " good luck!");
 		}
 		state = State.BETS;
 		notifyObservers(data);
@@ -97,6 +105,7 @@ public class ConsoleGUI extends Observable implements Igui {
 
 	@Override
 	public void declareWinners(Observable obj) {
+		Map<String, String> data = new HashMap<String, String>();
 		Model myModel = (Model) obj;
 		BlackJackDealer dealer = (BlackJackDealer) myModel.getDealer();
 
@@ -113,24 +122,37 @@ public class ConsoleGUI extends Observable implements Igui {
             if(myModel.getWinnersRound().contains(player)){
 				System.out.println(player.getName() + " congratulations!!! you won " + player.getBetSize() * 2);
 			}else{
-				System.out.println(player.getName() + " you lost this round..");
-
+				System.out.println(player.getName() + " you lost this round..\n");
 			}
-        }		
+		}
+		state = State.END_GAME;
+		notifyObservers(data);
 	}
 
 	private String face(int value, int suit) {
+		String strVal;
         String face = "";
-        face += ("+-----------+" + "\n");
+		if(value == 11){
+			strVal = "J";
+		}else if(value == 12){
+			strVal = "Q";
+		}else if(value == 13){
+			strVal = "K";
+		}else if(value == 1){
+			strVal = "A";
+		}else{
+			strVal = String.valueOf(value);
+		}
+        face += ("+------------+" + "\n");
         for(int i = 0; i < 6; i++) {
             for(int j = 0; j < 3; j++) {
                 if(j == 0 && i != 3) {
-                    face += ("|  " + " ");
+                    face += ("|  " + "  ");
                 } else if(j == 1 && i == 1) {
-                    if(value >= 10) {
-                        face += (" " + value + " ");
+                    if(value == 10) {
+                        face += (" " + strVal + " ");
                     } else {
-                        face += ("  " + value + " ");
+                    face += (" " + strVal + "  ");
                     }
                 } else if (i != 3) {
                     face += ("   " + " ");
@@ -138,20 +160,20 @@ public class ConsoleGUI extends Observable implements Igui {
 
 				if (j == 0 && i == 3) {
 					if(suit == 1) {
-						face += ("| DIAMONDS  ");
+						face += ("|  DIAMONDS  ");
 					} else if(suit == 2) {
-						face += ("|   SPADES  ");
+						face += ("|   SPADES   ");
 					} else if(suit == 3) {
-						face += ("|   HEARTS  ");
+						face += ("|   HEARTS   ");
 					} else if(suit == 4) {
-						face += ("|   CLUBS   ");
+						face += ("|   CLUBS    ");
 					}
 				}
             }
             face += ("|");
             face += ("\n");
         }
-        face += ("+-----------+"  + "\n");
+        face += ("+------------+"  + "\n");
         return face;
     }
 
