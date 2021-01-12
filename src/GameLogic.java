@@ -62,7 +62,7 @@ public class GameLogic extends Model {
     }
 
 
-    public void platOneTurn(Player player, String command){
+    public void playOneTurn(Player player, String command){
         if(player.getStay()){
             return;
         }
@@ -101,7 +101,7 @@ public class GameLogic extends Model {
             command = entry.getValue();
             player = getPlayerByName(playerName);
             if (player != null){
-                platOneTurn(player, command);
+                playOneTurn(player, command);
             }
         }
         if(checkEndGame()){

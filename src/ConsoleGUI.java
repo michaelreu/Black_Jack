@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class ConsoleGUI extends Observable implements Igui {
 	Scanner sc;
@@ -14,17 +15,14 @@ public class ConsoleGUI extends Observable implements Igui {
 	@Override
 	public void getUserCommand(Observable obj) {
 		Model myModel = (Model) obj;
-		this.state =  State.PLAYTURN;
+		this.state = State.PLAYTURN;
 		Map<String, String> data = new HashMap<String, String>();
 		int userCommand;
 		String command;
 		ArrayList<Card> hand;
-		for (Player playerTurn : myModel.players){
+		for (Player playerTurn : myModel.players) {
 			hand = playerTurn.getHand();
-			System.out.println(playerTurn.getName() + ": your hand: ");
-			for (Card card : hand) {
-				System.out.println(face(card.getRank(), card.getSuit()));
-			}
+			printHand(playerTurn.getName(), hand);
 			if (playerTurn.getStay()){
 				continue;
 			}
@@ -108,17 +106,9 @@ public class ConsoleGUI extends Observable implements Igui {
 		Map<String, String> data = new HashMap<String, String>();
 		Model myModel = (Model) obj;
 		BlackJackDealer dealer = (BlackJackDealer) myModel.getDealer();
-
-		System.out.println("The dealer Cards are: \n");
-		for (Card card : dealer.getHand()) {
-			System.out.println(face(card.getRank(), card.getSuit()));
-		}
-
 		for (Player player : myModel.players) {
-			System.out.println(player.getName() + " Cards are: \n");
-			for (Card card : player.getHand()) {
-				System.out.println(face(card.getRank(), card.getSuit()));
-			}
+			printHand(player.getName(), player.getHand());
+			printHand("dealer", dealer.getHand());
             if(myModel.getWinnersRound().contains(player)){
 				System.out.println(player.getName() + " congratulations!!! you won " + player.getBetSize() * 2);
 			}else{
@@ -129,8 +119,16 @@ public class ConsoleGUI extends Observable implements Igui {
 		notifyObservers(data);
 	}
 
+	
+	private void printHand(String name, ArrayList<Card> hand){
+		System.out.println(name + " Cards are: \n");
+		for (Card card : hand) {
+			System.out.println(face(card.getRank(), card.getSuit()));
+		}
+	} 
+
 	private String face(int value, int suit) {
-		String strVal;
+	    String strVal;
         String face = "";
 		if(value == 11){
 			strVal = "J";
@@ -143,37 +141,37 @@ public class ConsoleGUI extends Observable implements Igui {
 		}else{
 			strVal = String.valueOf(value);
 		}
-        face += ("+------------+" + "\n");
-        for(int i = 0; i < 6; i++) {
+        face += ("+----------+" + "\n");
+        for(int i = 0; i < 2; i++) {
             for(int j = 0; j < 3; j++) {
-                if(j == 0 && i != 3) {
+                if(j == 0 && i != 1) {
                     face += ("|  " + "  ");
-                } else if(j == 1 && i == 1) {
+                } else if(j == 1 && i == 0) {
                     if(value == 10) {
-                        face += (" " + strVal + " ");
+                        face += ("" + strVal + " ");
                     } else {
-                    face += (" " + strVal + "  ");
+                    face += ("" + strVal + "  ");
                     }
-                } else if (i != 3) {
-                    face += ("   " + " ");
+                } else if (i != 1) {
+                    face += ("  " + " ");
                 }
 
-				if (j == 0 && i == 3) {
+				if (j == 0 && i == 1) {
 					if(suit == 1) {
-						face += ("|  DIAMONDS  ");
+						face += ("| DIAMONDS ");
 					} else if(suit == 2) {
-						face += ("|   SPADES   ");
+						face += ("|  SPADES  ");
 					} else if(suit == 3) {
-						face += ("|   HEARTS   ");
+						face += ("|  HEARTS  ");
 					} else if(suit == 4) {
-						face += ("|   CLUBS    ");
+						face += ("|  CLUBS   ");
 					}
 				}
             }
             face += ("|");
             face += ("\n");
         }
-        face += ("+------------+"  + "\n");
+        face += ("+----------+"  + "\n");
         return face;
     }
 
