@@ -1,29 +1,35 @@
 import java.util.ArrayList;
 
-public class Player {
+public class Player implements Cloneable {
     private String name;
     private int amount;
     private Boolean stay;
     private ArrayList<Card> hand;
     private int betSize;
+    private int currTotalRank;
 
-    public Player(String name, int amount){
+    public Player(String name, int amount) {
         this.name = name;
         this.amount = amount;
         this.stay = false;
         this.hand = new ArrayList<Card>();
+        this.currTotalRank = 0;
 
     }
 
-    public void addCard(Card card){
+    public void addCard(Card card) {
         this.hand.add(card);
+        currTotalRank += card.getRank();
     }
 
-    public void betSize(int bet){
-        if (bet > this.amount){
+    public int getTotalRank() {
+        return currTotalRank;
+    }
+
+    public void betSize(int bet) {
+        if (bet > this.amount) {
             this.betSize = this.amount;
-        }
-        else{
+        } else {
             this.betSize = bet;
         }
     }
@@ -54,6 +60,7 @@ public class Player {
 
     public void emptyHand() {
         this.hand.removeAll(this.hand);
+        currTotalRank = 0;
     }
 
     public void lost_round() {
@@ -66,5 +73,10 @@ public class Player {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

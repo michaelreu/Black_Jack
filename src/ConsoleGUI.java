@@ -14,18 +14,18 @@ public class ConsoleGUI extends Observable implements Igui {
 
 	@Override
 	public void getUserCommand(Observable obj) {
-		Model myModel = (Model) obj;
+		GameLogic myModel = (GameLogic) obj;
 		this.state = State.PLAYTURN;
 		Map<String, String> data = new HashMap<String, String>();
 		int userCommand;
 		String command;
 		ArrayList<Card> hand;
-		for (Player playerTurn : myModel.players) {
+		for (Player playerTurn : myModel.getPlayers()) {
 			hand = playerTurn.getHand();
-			printHand(playerTurn.getName(), hand);
-			if (playerTurn.getStay()){
+			if (hand.isEmpty() || playerTurn.getStay()){
 				continue;
 			}
+			printHand(playerTurn.getName(), hand);
 			do {
 				System.out.println("press '1' to take one more card or '0' to stay");
 				while (!sc.hasNextInt()) {
