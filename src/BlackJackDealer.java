@@ -33,7 +33,7 @@ public class BlackJackDealer implements Dealer {
     int rank(ArrayList<Card> cards){
         int sumCards = 0; 
         //TODO check that the cards are sorted in DESCENDING order.
-        Comparator<Card> compareByRank = (Card c1, Card c2) -> c1.getRank() - c2.getRank();
+        Comparator<Card> compareByRank = (Card c1, Card c2) -> c2.getRank() - c1.getRank();
         Collections.sort(cards,compareByRank);
 
         for (Card card : cards){
