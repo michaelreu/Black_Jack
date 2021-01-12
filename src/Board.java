@@ -18,6 +18,9 @@ public class Board implements Iobserver {
     @Override
     public void update(Observable obj) {
         switch (obj.state) {
+            case INIT:
+                gui.addPlayers();
+                break;
             case BETS:
                 gui.makeBet(obj);
                 break;

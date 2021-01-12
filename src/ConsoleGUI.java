@@ -22,12 +22,17 @@ public class ConsoleGUI extends Observable implements Igui {
 		ArrayList<Card> hand;
 		for (Player playerTurn : myModel.getPlayers()) {
 			hand = playerTurn.getHand();
-			if (hand.isEmpty() || playerTurn.getStay()){
+			if (hand.isEmpty() || playerTurn.getStatus() == Player.PlayerStatus.STAY) {
 				continue;
 			}
 			printHand(playerTurn.getName(), hand);
+			if (playerTurn.getStatus() == Player.PlayerStatus.OUTOFRANGE) {
+				System.out.println(playerTurn.getName() + ", you lost!! better luck next time...");
+				continue;
+			}
+
 			do {
-				System.out.println("press '1' to take one more card or '0' to stay");
+				System.out.println(playerTurn.getName() + ", press '1' to take one more card or '0' to stay");
 				while (!sc.hasNextInt()) {
 					System.out.println("That's not a number!");
 					sc.next(); // this is important!
@@ -35,11 +40,12 @@ public class ConsoleGUI extends Observable implements Igui {
 				userCommand = sc.nextInt();
 			} while (userCommand != 0 && userCommand != 1);
 
-			if (userCommand == 0){
-				System.out.println("you decided to stay, please wait to the other players bets");
+			if (userCommand == 0) {
+				System.out
+						.println(playerTurn.getName() + ", you decided to stay, please wait to the other players bets");
 				command = "stay";
-			}else{
-				System.out.println("you choose to get one more card");
+			} else {
+				System.out.println(playerTurn.getName() + ", you choose to get one more card");
 				command = "oneMore";
 			}
 			data.put(playerTurn.getName(), command);
@@ -49,22 +55,31 @@ public class ConsoleGUI extends Observable implements Igui {
 		}
 	}
 
+	private void startGame() {
+		System.out.println("**********************************");
+		System.out.println("*                                *");
+		System.out.println("* Welcome to Black Jack 21!!!    *");
+		System.out.println("*                                *");
+		System.out.println("**********************************");
+	}
+
 	@Override
 	public void addPlayers() {
 		int index = 1;
 		Map<String, String> data = new HashMap<String, String>();
-		System.out.println("\nWelcome to theBlack Jack game!");
+		startGame();
 		System.out.println("Enter player " + index + " name ");
 		String name = System.console().readLine().trim();
-		while(true){
+		while (true) {
 			data.put(name, name);
 			++index;
 			System.out.println("Enter player " + index + " name or '0' to start to play");
 			name = System.console().readLine().trim();
-			if (name.equals("0")){
+			if (name.equals("0")) {
 				break;
 			}
 		}
+		state = State.INIT;
 		notifyObservers(data);
 	}
 
@@ -73,25 +88,26 @@ public class ConsoleGUI extends Observable implements Igui {
 		Model myModel = (Model) obj;
 		Map<String, String> data = new HashMap<String, String>();
 		int betSize = 0;
-		for (Player player : myModel.getPlayers()) {	
+		for (Player player : myModel.getPlayers()) {
 			do {
-				if (player.getAmount() == 0){
+				if (player.getAmount() == 0) {
 					System.out.println(player.getName() + ", Your Balance is Zero, please come back with money\n");
 					betSize = 0;
 					break;
 				}
-				System.out.println(player.getName() + ", your balance is: " + player.getAmount() +"\nplease enter your bet: ");
+				System.out.println(
+						player.getName() + ", your balance is: " + player.getAmount() + "\nplease enter your bet: ");
 				while (!sc.hasNextInt()) {
 					System.out.println("That's not a number!");
 					sc.next();
 				}
 				betSize = sc.nextInt();
-				if(betSize >  player.getAmount()){
+				if (betSize > player.getAmount()) {
 					System.out.println(player.getName() + ",your bet is higher than your credit, please bet again!\n");
 					betSize = 0;
 				}
 			} while (betSize <= 0);
-			if(betSize > 0){
+			if (betSize > 0) {
 				System.out.println(player.getName() + ", your bet is: " + betSize + " good luck!\n");
 			}
 			data.put(player.getName(), String.valueOf(betSize));
@@ -100,18 +116,19 @@ public class ConsoleGUI extends Observable implements Igui {
 		notifyObservers(data);
 	}
 
-
 	@Override
 	public void declareWinners(Observable obj) {
 		Map<String, String> data = new HashMap<String, String>();
 		Model myModel = (Model) obj;
 		BlackJackDealer dealer = (BlackJackDealer) myModel.getDealer();
+		System.out.println("********************************");
+		printHand("dealer", dealer.getHand());
+		System.out.println("********************************");
 		for (Player player : myModel.players) {
 			printHand(player.getName(), player.getHand());
-			printHand("dealer", dealer.getHand());
-            if(myModel.getWinnersRound().contains(player)){
+			if (myModel.getWinnersRound().contains(player)) {
 				System.out.println(player.getName() + " congratulations!!! you won " + player.getBetSize() * 2);
-			}else{
+			} else {
 				System.out.println(player.getName() + " you lost this round..\n");
 			}
 		}
@@ -119,11 +136,16 @@ public class ConsoleGUI extends Observable implements Igui {
 		notifyObservers(data);
 	}
 
-	
-	private void printHand(String name, ArrayList<Card> hand){
+	private void printHand(String name, ArrayList<Card> hand) {
+		if (hand.isEmpty()) {
+			return;
+		}
 		System.out.println(name + " Cards are: \n");
 		for (Card card : hand) {
 			System.out.println(face(card.getRank(), card.getSuit()));
+			try {
+				TimeUnit.SECONDS.sleep(1);
+			} catch (InterruptedException e) {}
 		}
 	} 
 

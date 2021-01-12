@@ -1,4 +1,12 @@
-public class Card {
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class Card implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     public static final int DIAMOND = 1;
     public static final int HEART = 2;
     public static final int SPADE = 3;
@@ -24,4 +32,19 @@ public class Card {
         return suit;
     }
 
+    public Card makeClone() {
+        try{
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            out.writeObject(this);
+            
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            ObjectInputStream in = new ObjectInputStream(inputStream);
+            Card copied = (Card) in.readObject();
+            return copied;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
 }

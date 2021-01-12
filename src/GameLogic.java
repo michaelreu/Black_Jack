@@ -1,6 +1,6 @@
-import java.lang.management.PlatformManagedObject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 
@@ -8,8 +8,6 @@ public class GameLogic extends Model {
 
     private BlackJackDealer dealer;
     private int init_amount;
- 
-
 
     public GameLogic(BlackJackDeckFactory deckFactory) {
 
@@ -21,31 +19,38 @@ public class GameLogic extends Model {
     }
 
     public void whoWin() {
-        dealer.endTurn();
+        endTurn();
         for (Player player : players) {
-            if(dealer.isPlayerHandWon(player.getHand())){
+            if (isPlayerHandWon(player.getHand())) {
                 winnersRound.add(player);
-                player.setAmount(player.getAmount() +  (player.getBetSize() * 2));
+                player.setAmount(player.getAmount() + (player.getBetSize() * 2));
             }
         }
     }
 
-    public void clearLastHand(){
-        for (Player player : players) {
-            player.setBetSize(0);
-            player.emptyHand();
-            player.setStay(false);
-        }
+    public void clearLastHand() {
+        
         dealer.emptyHand();
         winnersRound.removeAll(winnersRound);
-        this.state = State.BETS;
+        if(noPlayersChecker()){
+            players.clear();
+            this.state = State.INIT;
+        }else{
+            for (Player player : players) {
+                player.setBetSize(0);
+                player.emptyHand();
+                player.setStatus(Player.PlayerStatus.PLAY);
+            }
+            this.state = State.BETS;
+        }
+        
         notifyObservers();
     }
 
 
-    private Boolean checkEndGame(){
+    private Boolean noPlayersChecker(){
         for (Player player : players) {
-            if(!player.getStay()){
+            if(player.getAmount() > 0){
                 return false;
             }
         }
@@ -53,29 +58,37 @@ public class GameLogic extends Model {
     }
 
 
-
-    public Player getPlayerByName(String playerName){
+    private Boolean checkEndGame() {
         for (Player player : players) {
-            if(player.getName() == playerName){
+            if (player.getStatus() == Player.PlayerStatus.PLAY) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Player getPlayerByName(String playerName) {
+        for (Player player : players) {
+            if (player.getName().equals(playerName)) {
                 return player;
             }
         }
         return null;
     }
 
-
-    public void playOneTurn(Player player, String command){
-        if(player.getStay()){
+    public void playOneTurn(Player player, String command) {
+        if (player.getStatus() == Player.PlayerStatus.OUTOFRANGE || player.getStatus() == Player.PlayerStatus.STAY) {
             return;
         }
-        if (command.equals("stay")){
-            player.setStay(true);
-        }else{
+        if (command.equals("stay")) {
+            player.setStatus(Player.PlayerStatus.STAY);
+        } else {
             player.addCard(dealer.getCard());
+            if (rank(player.getHand()) > 21){
+                player.setStatus(Player.PlayerStatus.OUTOFRANGE);
+            }
         }
     }
-
-    
 
     @Override
     public void dealFirstCards() {
@@ -99,11 +112,11 @@ public class GameLogic extends Model {
             playerName = entry.getKey();
             command = entry.getValue();
             player = getPlayerByName(playerName);
-            if (player != null){
+            if (player != null) {
                 playOneTurn(player, command);
             }
         }
-        if(checkEndGame()){
+        if (checkEndGame()) {
             state = State.END_GAME;
             whoWin();
         }
@@ -125,22 +138,25 @@ public class GameLogic extends Model {
         String playerName;
         int betSize;
         int playerAmount;
+        if(data.isEmpty()){
+            return;
+        }
         for (Map.Entry<String, String> entry : data.entrySet()) {
             playerName = entry.getKey();
             betSize = Integer.parseInt(entry.getValue());
             player = getPlayerByName(playerName);
-            if (player != null){
+            if (player != null) {
                 playerAmount = player.getAmount();
-                if (betSize == 0){
+                if (betSize == 0) {
                     players.remove(player);
-                    if(players.isEmpty()){
+                    if (players.isEmpty()) {
                         return;
                     }
                     continue;
                 }
                 player.setBetSize(betSize);
                 player.setAmount(playerAmount - betSize);
-                player.setStay(false);
+                player.setStatus(Player.PlayerStatus.PLAY);
             }
         }
         dealFirstCards();
@@ -158,13 +174,62 @@ public class GameLogic extends Model {
     @Override
     public ArrayList<Player> getPlayers() {
         ArrayList<Player> currPlayers = new ArrayList<Player>();
-        Collections.copy(currPlayers, players);
-        for (Player player : players){
-            if (player.getTotalRank() > 21){
-                player.emptyHand();
-                player.setStay(true);
+        Player curr;
+        for (Player player : players) {
+            try{
+                curr = player.makeClone();
+            }catch(Exception ex){
+                curr = player;
             }
+            if (rank(player.getHand()) > 21){
+                player.emptyHand();
+                player.setStatus(Player.PlayerStatus.OUTOFRANGE);
+                curr.setStatus(Player.PlayerStatus.OUTOFRANGE);  
+
+            }
+            currPlayers.add(curr);
         }
         return currPlayers;
+    }
+
+    private boolean isPlayerHandWon(ArrayList<Card> playerCards){
+        int playerRank = rank(playerCards);
+        int dealerRank = rank(dealer.getHand());
+
+        if (playerRank > 21 || playerRank == 0){
+            return false;
+        }else if((dealerRank > 21) || (playerRank > dealerRank)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    void endTurn() {
+        while(rank(dealer.getHand()) < 17){
+            dealer.addCard(dealer.getCard());
+        }
+    }
+
+    int rank(ArrayList<Card> cards){
+        int sumCards = 0; 
+        Comparator<Card> compareByRank = (Card c1, Card c2) -> c2.getRank() - c1.getRank();
+        Collections.sort(cards,compareByRank);
+
+        for (Card card : cards){
+            int rank = card.getRank();
+            if (rank == 11 || rank == 12 || rank == 13){
+                sumCards += 10;
+            }else if(rank == 1){
+                if (sumCards + 11 <= 21){
+                    sumCards += 11;
+                }else{
+                    sumCards += 1;
+                }
+            }else{
+                sumCards += rank;
+            }
+        }
+        return sumCards;
     }
 }

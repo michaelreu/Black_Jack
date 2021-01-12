@@ -1,29 +1,34 @@
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Player implements Cloneable {
+public class Player implements Serializable {
+    public enum PlayerStatus {
+        PLAY,
+        STAY,
+        OUTOFRANGE
+      }
+
+    private static final long serialVersionUID = 1L;
     private String name;
     private int amount;
-    private Boolean stay;
     private ArrayList<Card> hand;
     private int betSize;
-    private int currTotalRank;
+    private PlayerStatus status;
 
     public Player(String name, int amount) {
         this.name = name;
         this.amount = amount;
-        this.stay = false;
+        this.status = PlayerStatus.PLAY;
         this.hand = new ArrayList<Card>();
-        this.currTotalRank = 0;
 
     }
 
     public void addCard(Card card) {
         this.hand.add(card);
-        currTotalRank += card.getRank();
-    }
-
-    public int getTotalRank() {
-        return currTotalRank;
     }
 
     public void betSize(int bet) {
@@ -36,14 +41,6 @@ public class Player implements Cloneable {
 
     public String getName() {
         return name;
-    }
-
-    public Boolean getStay() {
-        return stay;
-    }
-
-    public void setStay(Boolean stay) {
-        this.stay = stay;
     }
 
     public ArrayList<Card> getHand() {
@@ -60,7 +57,6 @@ public class Player implements Cloneable {
 
     public void emptyHand() {
         this.hand.removeAll(this.hand);
-        currTotalRank = 0;
     }
 
     public void lost_round() {
@@ -75,8 +71,28 @@ public class Player implements Cloneable {
         this.amount = amount;
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public Player makeClone() {
+        try{
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            out.writeObject(this);
+            
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            ObjectInputStream in = new ObjectInputStream(inputStream);
+            Player copied = (Player) in.readObject();
+            return copied;
+        } catch (Exception e) {
+            return null;
+        }
     }
+
+    public PlayerStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PlayerStatus status) {
+        this.status = status;
+    }
+    
+
 }
