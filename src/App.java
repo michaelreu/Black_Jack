@@ -9,7 +9,7 @@ public class App {
         try {
             board.runGame();
         } catch (Exception ex) {
-            return;
+            System.out.println(ex.toString());
         }
     }
 }

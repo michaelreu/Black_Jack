@@ -1,4 +1,6 @@
+import java.lang.management.PlatformManagedObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 
@@ -70,9 +72,6 @@ public class GameLogic extends Model {
             player.setStay(true);
         }else{
             player.addCard(dealer.getCard());
-            if (dealer.rank(player.getHand()) > 21){
-                player.setStay(true);
-            }
         }
     }
 
@@ -154,5 +153,18 @@ public class GameLogic extends Model {
     @Override
     public Dealer getDealer() {
         return dealer;
+    }
+
+    @Override
+    public ArrayList<Player> getPlayers() {
+        ArrayList<Player> currPlayers = new ArrayList<Player>();
+        Collections.copy(currPlayers, players);
+        for (Player player : players){
+            if (player.getTotalRank() > 21){
+                player.emptyHand();
+                player.setStay(true);
+            }
+        }
+        return currPlayers;
     }
 }
