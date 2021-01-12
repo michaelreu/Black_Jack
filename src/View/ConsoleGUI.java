@@ -69,7 +69,7 @@ public class ConsoleGUI extends Observable implements Igui {
 		System.out.println("Enter player " + index + " name ");
 		String name = System.console().readLine().trim();
 		while (true) {
-			if(name != null && !name.trim().isEmpty()){ 
+			if(name != null && !name.trim().isEmpty() && !name.equals("0")){ 
 				data.put(name, name);
 				++index;
 			}
