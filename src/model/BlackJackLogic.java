@@ -92,7 +92,6 @@ public class BlackJackLogic extends Model {
         }
     }
 
-    @Override
     public void dealFirstCards() {
         dealer.shuffle();
         for (int i = 0; i < 2; i++) {

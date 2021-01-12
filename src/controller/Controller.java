@@ -5,15 +5,15 @@ import java.util.Map;
 import Observer.Iobserver;
 import Observer.Observable;
 import View.Igui;
-import controller.Board;
+import controller.Controller;
 import model.Model;
 
-public class Board implements Iobserver {
+public class Controller implements Iobserver {
 
     Igui gui;
     Model gameLogic;
 
-    public Board(Igui ui, Model gl) {
+    public Controller(Igui ui, Model gl) {
         gui = ui;
         gameLogic = gl;
     }

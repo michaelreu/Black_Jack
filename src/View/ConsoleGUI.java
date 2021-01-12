@@ -69,11 +69,13 @@ public class ConsoleGUI extends Observable implements Igui {
 		System.out.println("Enter player " + index + " name ");
 		String name = System.console().readLine().trim();
 		while (true) {
-			data.put(name, name);
-			++index;
-			System.out.println("Enter player " + index + " name or '0' to start to play");
+			if(name != null && !name.trim().isEmpty()){ 
+				data.put(name, name);
+				++index;
+			}
+			System.out.println("Enter player " + index + " name or '0' to start to play(at least 1 player)");
 			name = System.console().readLine().trim();
-			if (name.equals("0")) {
+			if((name.equals("0") && index > 1)){
 				break;
 			}
 		}
