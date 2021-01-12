@@ -1,3 +1,4 @@
+package model;
 
 public abstract class DeckFactory {
     public AbstractDeck getDeck(){

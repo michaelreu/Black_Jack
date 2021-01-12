@@ -1,3 +1,5 @@
+package model;
+
 public class BlackJackDeckFactory extends DeckFactory {
 
     @Override

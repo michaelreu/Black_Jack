@@ -1,3 +1,5 @@
+package model;
+
 public class BlackJackDeck extends AbstractDeck{
 
     public BlackJackDeck(Integer size){

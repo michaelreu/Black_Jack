@@ -1,13 +1,17 @@
+package Observer;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import model.State;
 
-abstract class Observable {
+
+public abstract class Observable {
 
     List<Iobserver> listeners;
-    protected State state;
+    public State state;
 
     public Observable(){
         listeners = new ArrayList<>();

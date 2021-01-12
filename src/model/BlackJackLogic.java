@@ -1,15 +1,17 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 
 
-public class GameLogic extends Model {
+public class BlackJackLogic extends Model {
 
     private BlackJackDealer dealer;
     private int init_amount;
 
-    public GameLogic(BlackJackDeckFactory deckFactory) {
+    public BlackJackLogic(BlackJackDeckFactory deckFactory) {
 
         dealer = new BlackJackDealer(deckFactory);
         players = new ArrayList<Player>();
@@ -171,8 +173,8 @@ public class GameLogic extends Model {
         return dealer;
     }
 
-    @Override
-    public ArrayList<Player> getPlayers() {
+
+    public ArrayList<Player> getOnlinePlayers(){
         ArrayList<Player> currPlayers = new ArrayList<Player>();
         Player curr;
         for (Player player : players) {

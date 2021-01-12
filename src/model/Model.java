@@ -1,10 +1,12 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.Map;
 
+import Observer.Observable;
 
 
-
-abstract class Model extends Observable {
+public abstract class Model extends Observable {
     protected ArrayList<Player> players;
     protected ArrayList<Player> winnersRound;
 

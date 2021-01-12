@@ -1,8 +1,14 @@
+package View;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+
+import Observer.*;
+import model.*;
+
 
 public class ConsoleGUI extends Observable implements Igui {
 	Scanner sc;
@@ -14,13 +20,13 @@ public class ConsoleGUI extends Observable implements Igui {
 
 	@Override
 	public void getUserCommand(Observable obj) {
-		GameLogic myModel = (GameLogic) obj;
+		BlackJackLogic myModel = (BlackJackLogic) obj;
 		this.state = State.PLAYTURN;
 		Map<String, String> data = new HashMap<String, String>();
 		int userCommand;
 		String command;
 		ArrayList<Card> hand;
-		for (Player playerTurn : myModel.getPlayers()) {
+		for (Player playerTurn : myModel.getOnlinePlayers()) {
 			hand = playerTurn.getHand();
 			if (hand.isEmpty() || playerTurn.getStatus() == Player.PlayerStatus.STAY) {
 				continue;
@@ -55,14 +61,6 @@ public class ConsoleGUI extends Observable implements Igui {
 		}
 	}
 
-	private void startGame() {
-		System.out.println("**********************************");
-		System.out.println("*                                *");
-		System.out.println("* Welcome to Black Jack 21!!!    *");
-		System.out.println("*                                *");
-		System.out.println("**********************************");
-	}
-
 	@Override
 	public void addPlayers() {
 		int index = 1;
@@ -88,6 +86,7 @@ public class ConsoleGUI extends Observable implements Igui {
 		Model myModel = (Model) obj;
 		Map<String, String> data = new HashMap<String, String>();
 		int betSize = 0;
+		betMessage();
 		for (Player player : myModel.getPlayers()) {
 			do {
 				if (player.getAmount() == 0) {
@@ -121,10 +120,9 @@ public class ConsoleGUI extends Observable implements Igui {
 		Map<String, String> data = new HashMap<String, String>();
 		Model myModel = (Model) obj;
 		BlackJackDealer dealer = (BlackJackDealer) myModel.getDealer();
-		System.out.println("********************************");
+		roundOverMessage();
 		printHand("dealer", dealer.getHand());
-		System.out.println("********************************");
-		for (Player player : myModel.players) {
+		for (Player player : myModel.getPlayers()) {
 			printHand(player.getName(), player.getHand());
 			if (myModel.getWinnersRound().contains(player)) {
 				System.out.println(player.getName() + " congratulations!!! you won " + player.getBetSize() * 2);
@@ -140,13 +138,14 @@ public class ConsoleGUI extends Observable implements Igui {
 		if (hand.isEmpty()) {
 			return;
 		}
-		System.out.println(name + " Cards are: \n");
+		System.out.println(name + " Cards: ");
 		for (Card card : hand) {
 			System.out.println(face(card.getRank(), card.getSuit()));
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e) {}
 		}
+		System.out.println("------------------------------");
 	} 
 
 	private String face(int value, int suit) {
@@ -197,6 +196,29 @@ public class ConsoleGUI extends Observable implements Igui {
         return face;
     }
 
+	private void startGame() {
+		System.out.println("\n**********************************");
+		System.out.println("*                                *");
+		System.out.println("* Welcome to Black Jack 21!!!    *");
+		System.out.println("*                                *");
+		System.out.println("**********************************\n");
+	}
+
+	private void betMessage() {
+		System.out.println("\n**********************************");
+		System.out.println("*                                *");
+		System.out.println("*           Bets time!!!         *");
+		System.out.println("*                                *");
+		System.out.println("**********************************\n");
+	}
+
+	private void roundOverMessage() {
+		System.out.println("\n**********************************");
+		System.out.println("*                                *");
+		System.out.println("*         Round is over!!        *");
+		System.out.println("*                                *");
+		System.out.println("**********************************\n");
+	}
 }
 
 

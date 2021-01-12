@@ -1,3 +1,5 @@
+package model;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -24,11 +26,11 @@ public class Card implements Serializable {
         this.suit = suit;
     }
 
-    int getRank(){
+    public int getRank(){
         return rank;
     }
 
-    int getSuit(){
+    public int getSuit(){
         return suit;
     }
 

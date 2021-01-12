@@ -1,4 +1,12 @@
+package controller;
+
 import java.util.Map;
+
+import Observer.Iobserver;
+import Observer.Observable;
+import View.Igui;
+import controller.Board;
+import model.Model;
 
 public class Board implements Iobserver {
 

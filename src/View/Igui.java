@@ -1,3 +1,7 @@
+package View;
+
+import Observer.Observable;
+
 public interface Igui {
     public void getUserCommand(Observable obj);
     public void addPlayers();
